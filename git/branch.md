@@ -22,7 +22,7 @@ HEAD는 브랜치를 가르킵니다
 
 다른 브랜치로 이동하고싶을때는 checkout 을 사용합니다.
 
-![스크린샷 2022-03-22 오후 2.26.56.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a0fda626-b137-47b9-a2a4-9ef1e51b9069/스크린샷_2022-03-22_오후_2.26.56.png)
+![git1](../img/git1.png)
 
 ### marge
 
