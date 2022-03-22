@@ -51,7 +51,7 @@ HEAD는 브랜치를 가르킵니다
 - 내용보기
     
     
-    ![스크린샷 2022-03-22 오후 12.32.36.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e1014a64-37fa-48b5-9998-002f3a7175bf/스크린샷_2022-03-22_오후_12.32.36.png)
+    ![git2](../img/git2.png)
     
     **Conflict 해결방법** 
     
@@ -61,7 +61,7 @@ HEAD는 브랜치를 가르킵니다
     
     만약 marge 작업을 취소하려면 아래커맨드를 입력하면 된다
     
-    ![스크린샷 2022-03-22 오후 12.45.45.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ec17410d-ae29-4abe-8a70-2db4cf89803f/스크린샷_2022-03-22_오후_12.45.45.png)
+    ![git3](../img/git3.png)
     
     **marge —abort**
     
