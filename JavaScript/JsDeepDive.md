@@ -1,3 +1,101 @@
+# 📍16장 프로퍼티 어트리뷰트 
+
+프로퍼티 어트리 뷰트를 이해하기위해 내부 슬롯 과 내부 메소드의 개념을 알아보자
+
+## 내부 슬롯과 내부 메서드
+
+내부 슬롯과 내부 메서드는 자바스크립트 엔진의 구현 알고리즘을 설명하기위해  ECMAScript 사양에서 사용하는 의사 프로퍼티 와 의사 메서드 이다. **[[]] 이중대괄호 로 감싼 이름들이 내부 슬롯과 내부 메서드 이다**.
+
+자바스크립트 엔진 내부 로직이므로 원칙적으로 자바스크립트는 내부 슬롯과 내부 메서드에 직접 접근하거나 호출할수있는 방법을 제공하지 않는다. **단 일부 내부 슬롯과 내부 메서드에 한하여 간접적으로 접근할수있는 수단이 제공된다.** 
+
+예를 들어 모든 객체를 [[prototype]]이라는 내부 슬롯을 갖는데 `__proto__` 를 통해 간접적으로 접근할수있다.
+
+```jsx
+const { prototype } = require("events");
+
+const o = {};
+o.[[prototype]] // SyntaxError
+console.log(o.__proto__); // object.prototype
+```
+
+### 프로퍼티 어트리 뷰트와 프로퍼티 디스크립터 객체
+
+자바스크립트 엔진은 프로퍼티를 생성할 때 프로퍼티의 상태를 나타내는 프로퍼티 어트리뷰트를 기본값으로 자동 정의한다. 프로퍼티 상태란 `프로퍼티의 값` , `값의 갱신 가능 여부` , `열거 가능 여부` , `재정의 가능 여부` 를 말한다.
+
+프로퍼티 어트리 뷰트는 내부 슬롯이기때문에 직접 접근할 수 없지만 `object.getOwnPropertyDescriptor` 메서드를 통해 간접적으로 확인할수있다.
+
+```jsx
+const person = {
+  name: "jaehyun",
+};
+person.age = 20;
+// 객체 참조명 , 프로퍼티 키 값으로 구문작성
+
+console.log(Object.getOwnPropertyDescriptor(person, "name"));
+
+/* 프로퍼티 디스크립터 객체를 반환한다. 
+{
+  value: 'jaehyun', 프로퍼티 값
+	  writable: true, 값의 갱신 가능 여부 
+  enumerable: true, 열거 가능 여부
+  configurable: true 재정의 가능 여부 
+}
+*/
+
+console.log(Object.getOwnPropertyDescriptor(person));
+// 모든 프로퍼티의 프로퍼티 어트리뷰트 정보를 제공하는 프로퍼티 디스크립터 객체를 반환한다.
+```
+
+### 접근자 프로퍼티
+
+접근자 프로퍼티는 자체적으로 값을 갖지 않고 **다른 데이터 프로퍼티의 값을 읽거나 저장할때 사용하는 접근자 함수로 구성된 프로퍼티이다.**
+
+### get / set
+
+접근자 함수는 getter / setter 함수라고도 부른다. 
+
+```jsx
+const person = {
+  firstname: "jaehyun",
+    lastname: "kim",
+    //getter 함수
+    get fullName() {
+      return `${this.firstname} ${this.lastname}`
+    },
+    //setter 함수
+    set fullName(name) {
+        // 배열 디스트럭처링 할당 
+        [this.firstname, this.lastname] = name.split(" ");
+    }
+};
+
+console.log(person.firstname + " " + person.lastname); // jaehyun kim 
+// 접근자 프로퍼티를 통한 값의 저장
+// 접근자 프로퍼티 fullname 에 값을 저장하면 setter 함수가 호출된다.
+person.fullname = "Heegun Lee";
+console.log(person); // {firstname : "Heegun" , lastname: "Lee"}
+
+// 접근자 프로퍼티를 통한 프로퍼티 값의 참조 
+// 접근자 프로퍼티 fullname 에 접근하면 getter 함수가 호출된다.
+console.log(person.fullName); // Heegun Lee
+
+//firstname 은 데이터 프로퍼티 이다.
+let descriptor = Object.getOwnPropertyDescriptor(person, "firstname");
+console.log(descriptor);
+// {value : "Heegun", writable: true, enumerable: true, configurable : true}
+
+//fullname 은 접근자 프로퍼티 이다.
+descriptor = Object.getOwnPropertyDescriptor(person, "fullname");
+console.log(descriptor);
+// {get : f, set : f, enumerable: true, configurable: true}
+```
+
+위코드의 객체에 `데이터 프로퍼티` 와 `접근자 프로퍼티`가 있는데 
+
+**firstname , lastname** 이 `데이터 프로퍼티` , **get/ set 이 붙은 메서드가 있는 함수**가 `접근자 프로퍼티` 이다. 
+
+`접근자 프로퍼티`는 **값을 자체적으로 가지고있지않고 데이터의 프로퍼티 값을 읽거나 저장할때 관여한다.**
+
 # 📍15장 let, const 키워드와 블록 레벨 스코프
 
 ## var 변수의 문제점
