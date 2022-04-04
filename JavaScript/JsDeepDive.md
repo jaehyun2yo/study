@@ -1,12 +1,12 @@
-# 📍16장 프로퍼티 어트리뷰트 
+# 📍16장 프로퍼티 어트리뷰트
 
 프로퍼티 어트리 뷰트를 이해하기위해 내부 슬롯 과 내부 메소드의 개념을 알아보자
 
 ## 내부 슬롯과 내부 메서드
 
-내부 슬롯과 내부 메서드는 자바스크립트 엔진의 구현 알고리즘을 설명하기위해  ECMAScript 사양에서 사용하는 의사 프로퍼티 와 의사 메서드 이다. **[[]] 이중대괄호 로 감싼 이름들이 내부 슬롯과 내부 메서드 이다**.
+내부 슬롯과 내부 메서드는 자바스크립트 엔진의 구현 알고리즘을 설명하기위해 ECMAScript 사양에서 사용하는 의사 프로퍼티 와 의사 메서드 이다. **[[]] 이중대괄호 로 감싼 이름들이 내부 슬롯과 내부 메서드 이다**.
 
-자바스크립트 엔진 내부 로직이므로 원칙적으로 자바스크립트는 내부 슬롯과 내부 메서드에 직접 접근하거나 호출할수있는 방법을 제공하지 않는다. **단 일부 내부 슬롯과 내부 메서드에 한하여 간접적으로 접근할수있는 수단이 제공된다.** 
+자바스크립트 엔진 내부 로직이므로 원칙적으로 자바스크립트는 내부 슬롯과 내부 메서드에 직접 접근하거나 호출할수있는 방법을 제공하지 않는다. **단 일부 내부 슬롯과 내부 메서드에 한하여 간접적으로 접근할수있는 수단이 제공된다.**
 
 예를 들어 모든 객체를 [[prototype]]이라는 내부 슬롯을 갖는데 `__proto__` 를 통해 간접적으로 접근할수있다.
 
@@ -52,30 +52,30 @@ console.log(Object.getOwnPropertyDescriptor(person));
 
 ### get / set
 
-접근자 함수는 getter / setter 함수라고도 부른다. 
+접근자 함수는 getter / setter 함수라고도 부른다.
 
 ```jsx
 const person = {
   firstname: "jaehyun",
-    lastname: "kim",
-    //getter 함수
-    get fullName() {
-      return `${this.firstname} ${this.lastname}`
-    },
-    //setter 함수
-    set fullName(name) {
-        // 배열 디스트럭처링 할당 
-        [this.firstname, this.lastname] = name.split(" ");
-    }
+  lastname: "kim",
+  //getter 함수
+  get fullName() {
+    return `${this.firstname} ${this.lastname}`;
+  },
+  //setter 함수
+  set fullName(name) {
+    // 배열 디스트럭처링 할당
+    [this.firstname, this.lastname] = name.split(" ");
+  },
 };
 
-console.log(person.firstname + " " + person.lastname); // jaehyun kim 
+console.log(person.firstname + " " + person.lastname); // jaehyun kim
 // 접근자 프로퍼티를 통한 값의 저장
 // 접근자 프로퍼티 fullname 에 값을 저장하면 setter 함수가 호출된다.
 person.fullname = "Heegun Lee";
 console.log(person); // {firstname : "Heegun" , lastname: "Lee"}
 
-// 접근자 프로퍼티를 통한 프로퍼티 값의 참조 
+// 접근자 프로퍼티를 통한 프로퍼티 값의 참조
 // 접근자 프로퍼티 fullname 에 접근하면 getter 함수가 호출된다.
 console.log(person.fullName); // Heegun Lee
 
@@ -90,11 +90,103 @@ console.log(descriptor);
 // {get : f, set : f, enumerable: true, configurable: true}
 ```
 
-위코드의 객체에 `데이터 프로퍼티` 와 `접근자 프로퍼티`가 있는데 
+위코드의 객체에 `데이터 프로퍼티` 와 `접근자 프로퍼티`가 있는데
 
-**firstname , lastname** 이 `데이터 프로퍼티` , **get/ set 이 붙은 메서드가 있는 함수**가 `접근자 프로퍼티` 이다. 
+**firstname , lastname** 이 `데이터 프로퍼티` , **get/ set 이 붙은 메서드가 있는 함수**가 `접근자 프로퍼티` 이다.
 
 `접근자 프로퍼티`는 **값을 자체적으로 가지고있지않고 데이터의 프로퍼티 값을 읽거나 저장할때 관여한다.**
+`데이터 프로퍼티` 와 `접근자 프로퍼티`의 구별법은 `getOwnPropertyDescriptor 함수`를 사용했을때 **반환하는 객체가 다르다.**
+
+### 프로토타입
+
+프로토 타입은 어떤 객체의 상위객체(부모 객체)의 역할을 하는 객체이다.
+
+프로터 타입은 하위 객체에게 자신의 프로퍼티와 메서드를 상속한다. 하위 객체는 자신의 프로퍼티 또는 메서드 인것처럼 자유롭게 사용할수있다.
+
+## 프로퍼티 정의
+
+프로퍼티 정의란 새로운 프로퍼티를 추가하면서 프로퍼티 어트리뷰트를 명시적으로 정의하거나 , 기존 프로퍼티 의 어트리뷰트를 재정의 하는것을 말한다.
+
+object.defineProperty 메서드를 사용하면 퍼르퍼티의 어트리뷰트를 정의할수있다. 인수로는 객체의 참조 , 데이터 프로퍼티의 키인 문자열, 프로퍼티 디스크립터 객체를 전달한다.
+
+```jsx
+// 데이터 프로퍼티 정의
+// Object.defineProperty 메서드는 한번에 하나의 프로퍼티만 정의할수있다.
+Object.defineProperty(person, "firstname", {
+  value: "jaehyun",
+  writable: true,
+  enumerable: true,
+  configurable: true,
+});
+
+Object.defineProperty(person, "lastname", {
+  value: "kim",
+});
+// 디스크립터 객체의 프로퍼티를 누락시키면 value , get, set = undefined,
+//          writable , configurable, enumerable   = false 가 기본값이다.
+
+// Object.deineProperties 메서드는 여러개의 프로퍼티를 한 번에 정의할 수 있다.
+Object.defineProperties(person, {
+  // 데이터 프로퍼티
+  firstname: {
+    value: "jaehyun",
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+  lastnaem: {
+    value: "kim",
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+  // 접근자 프로퍼티
+  fullname: {
+    get() {
+      return `${this.firstname}${this.lastnaem}`;
+    },
+    set() {
+      [this.firstname, this.lastnaem] = name.split(" ");
+    },
+    enumerable: true,
+    configurable: true,
+  },
+});
+```
+
+## 객체 변경방지
+
+객체 는 변경 가능한 값이므로 재할당 없이 직접 변경할 수 있다.
+
+다만 자바스크립트 객체 의 변경 을 방지하는 다양한 메서드들은 객체의 변경을 금지하는 강도가 다르다
+
+| 구분           | 메서드                   | 프로퍼티 추가 | 프로퍼티 삭제 | 프로퍼티 값 읽기 | 프로퍼티 값 쓰기 | 프로퍼티 어트리뷰트 재정의 |
+| -------------- | ------------------------ | ------------- | ------------- | ---------------- | ---------------- | -------------------------- |
+| 객체 확장 금지 | Object.preventExtensions | x             | o             | o                | o                | o                          |
+| 객체 밀봉      | Object.seal              | x             | x             | o                | o                | x                          |
+| 객체 동결      | Object.freeze            | x             | x             | o                | x                | x                          |
+
+### 객체확장금지
+
+`Object.preventExtensions` 객체의 확장을 금지함 => 추가 금지 / 나머지 사용가능
+
+`Object.isExtensible` 확장가능한 객체인지 확인하는 메서드
+
+### 객체 밀봉
+
+`Object.seal` 객체 밀봉 => 읽고, 쓰기만 가능 / 추가,삭제,재정의 금지
+
+`Object.isSealed` 밀봉된 객체인지 확인하는 메서드
+
+### 객체 동결
+
+`Object.freeze` 객체동결 => 추가,삭제,재정의,값갱신 금지 / 읽기만가능
+
+`Object.isFrozen` 동결된 객체인지 확인하는 메서드
+
+### 불변 객체
+
+이전 변경방지 메서드 들은 얕은 변경 방지로 직속 프로퍼티만 변경이 방지되고 중첩 객체 까지는 영향을 주지못한다. `Object.freeze` 으로 객체 동결을해도 중첩객체까지 동결할수는 없는데 중첩객체까지 동결하여 변경이 불가능한 읽기 전용으로 불변 객체를 구현하려면 객체를 값으로 갖는 모든 프로퍼티에 재귀적으로 `Object.freeze` 을 호출해야된다.
 
 # 📍15장 let, const 키워드와 블록 레벨 스코프
 

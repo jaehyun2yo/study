@@ -61,3 +61,60 @@ console.log(descriptor);
 descriptor = Object.getOwnPropertyDescriptor(person, "fullname");
 console.log(descriptor);
 // {get : f, set : f, enumerable: true, configurable: true}
+
+const person = {};
+
+// 데이터 프로퍼티 정의
+// Object.defineProperty 메서드는 한번에 하나의 프로퍼티만 정의할수있다.
+Object.defineProperty(person, "firstname", {
+  value: "jaehyun",
+  writable: true,
+  enumerable: true,
+  configurable: true,
+});
+
+Object.defineProperty(person, "lastname", {
+  value: "kim",
+});
+// 디스크립터 객체의 프로퍼티를 누락시키면 value , get, set = undefined,
+//          writable , configurable, enumerable   = false 가 기본값이다.
+
+// Object.deineProperties 메서드는 여러개의 프로퍼티를 한 번에 정의할 수 있다.
+Object.defineProperties(person, {
+  // 데이터 프로퍼티
+  firstname: {
+    value: "jaehyun",
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+  lastnaem: {
+    value: "kim",
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+  // 접근자 프로퍼티
+  fullname: {
+    get() {
+      return `${this.firstname}${this.lastnaem}`;
+    },
+    set() {
+      [this.firstname, this.lastnaem] = name.split(" ");
+    },
+    enumerable: true,
+    configurable: true,
+  },
+});
+
+// 객체 확장 금지
+Object.preventExtensions; // 객체의 확장을 금지함  => 추가 금지 / 나머지 사용가능
+Object.isExtensible; // 확장가능한 객체인지 확인하는 메서드
+
+// 객체 밀봉
+Object.seal; // 객체 밀봉 => 읽고, 쓰기만 가능 / 추가,삭제,재정의 금지
+Object.isSealed; // 밀봉된 객체인지 확인하는 메서드
+
+//객체 동결
+Object.freeze; // 객체동결 => 추가,삭제,재정의,값갱신 금지 / 읽기만가능
+Object.isFrozen; // 동결된 객체인지 확인하는 메서드
