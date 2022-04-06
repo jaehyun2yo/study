@@ -1,3 +1,119 @@
+# 📍18장 함수와 일급객체
+
+다음 조건을 만족하는 객체를 일급객체라 한다.
+
+- 무명의 리터럴로 생성할 수 있다. 즉 런타임에 생성이 가능하다.
+- 변수나 자료구조( 객체, 배열 ) 에 저장할수있다.
+- 함수의 매게 변수에 전달할수있다.
+- 함수의 반환값으로 사용할수있다.
+
+**자바스크립트의 함수는 일급객체이다.**
+
+```jsx
+// 1. 무명의 리터럴로 생성가능하다
+// 2. 변수, 자료구조에 저장가능하다.
+const incresase = function (num) {
+  return ++num;
+};
+//3. 함수의 매개변수에 전달할 수 있다.
+//4. 함수의 반환값으로 사용할수있다.
+function makeCounter(aux) {
+  let num = 0;
+  return function () {
+    num = aux(num);
+    return num;
+  };
+}
+```
+
+함수가 일급 객체라는것은 **함수를 객체와 동일하게 사용할 수 있다는 의미**다.
+
+객체는 값이므로 함수는 값과 동일하게 취급할 수 있다.
+
+다만 **일반객체는 호출할수없지만 함수객체는 호출이 가능하다.**
+
+## argument 객체
+
+함수 객체의 arguments 객체는 **함수 호출시 전달된 인수들의 정보를 담고있는 유사 배열 객체 이다.**
+
+함수 내부에서 지역변수처럼 사용가능하기에 외부에서 참조는 불가능하다.
+
+```jsx
+// 자바스크립트 함수는 매개변수와 인수의 개수가 일치하는지 확인하지않는다
+function multiply(x, y) {
+  console.log(arguments);
+  return x * y;
+}
+console.log(multiply()); // NaN
+console.log(multiply(1)); // NaN
+console.log(multiply(1, 2)); // 2
+console.log(multiply(1, 2, 3)); // 2
+```
+
+**자바스크립트는 함수의 매개변수와 인수의 개수가 일치하는지 확인하지않는다**
+
+그렇기때문에 함수 호출시 매개변수만큼 인수를 전달하지않아도 에러가 발생하지않는다
+
+함수를 정의할때 선언한 매개변수는 함수 몸체 내부에서 변수와 동일하게 취급 하고
+
+함수가 호출하면 함수 몸체 내에서 암묵적으로 매개변수가 선언 되고 undefined로 초기화 된이후 인수가 할당된다. **선언된 매개변수보다 적게 인수가 할당되면 매개변수는 undefined를 유지하고 더 많이 전달될경우는 초과된 인수는 무시해버린다. 다만 초과됬다고 초과된 인수가 버려지는것은 아니다. 암묵적으로 arguments 객체의 프로퍼티로 보관된다.**
+
+### arguments 객체의 Symbol 프로퍼티
+
+arguments 객체를 순회 가능한 자료구조인 이터러블로 만들기 위한 프로퍼티 이다.
+
+```jsx
+// # arguments 객체의 Sysmbol 프로퍼티
+function multiply(x, y) {
+  //이터레이터
+  const iterator = arguments[Symbol.iterator]();
+
+  // 이터레이터의 next 메서드를 호출해서 arguments 를 순회
+  console.log(iterator.next()); // {value : 1, done: false}
+  console.log(iterator.next()); // {value : 2, done: false}
+  console.log(iterator.next()); // {value : 3, done: false}
+  console.log(iterator.next()); // {value : 4, done: false}
+
+  return x * y;
+}
+multiply(1, 2, 3);
+```
+
+### length 프로퍼티
+
+arguments 객체의 length 프로퍼티와 함수객체의 length 프로퍼티는 값이 다를 수 있기때문에 조심해야한다. **arguments 객체의 length 는 인자의 개수 를 가르키고**, **함수 객체의 length 프로퍼티는 매개변수의 개수 를 가리킨다.**
+
+```jsx
+// length 프로퍼티
+
+function foo() {}
+console.log(foo.length); // 0
+
+function bar(x) {
+  return x;
+}
+console.log(bar.length); // 1
+
+function baz(x, y) {
+  return x * y;
+}
+console.log(baz.length); // 2
+```
+
+### name 프로퍼티
+
+함수 객체의 name 프로퍼티는 함수 이름을 나타낸다 . ES6이후로 정식표준이되어 ES5 와 동작을 달리하니 주의하자. 함수 객체를 가르키는 식별자를 값으로 갖는다
+
+### ** proto ** 접근자 프로퍼티
+
+모든 객체는`[[Prototype]]` 이라는 내부 슬롯을 갖는데 객체 지향 프로그래밍의 상속을 구현하는 프로토타입 객체를 가리킨다. 해당 접근자 프로퍼티는`[[Prototype]]` 내부 슬롯이 가리키는 프로토타입 객체에 접근하기 위해 사용하는 접근자 프로퍼티 이다.
+
+### prototype 프로퍼티
+
+생성자 함수로 호출할수있는 consturctor 만이 소유하는 프로퍼티이다.
+
+해당 프로퍼티는 함수가 객체를 생성하는 생성자 함수로 호출될때 생성자 함수가 생성할 인스턴스의 프로토타입 객체를 가르키게된다.
+
 # 📍17장 생성자 함수에 의한 객체 생성
 
 객체 리터럴로 객체를 생성하는것이 일반적이나 생성자 함수로도 객체를 생성하는 방법이있다.
