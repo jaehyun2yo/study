@@ -177,3 +177,40 @@ circle.getDiameter(); // TypeError
 
 
 //--------------------------------------------------------------------
+
+// ## new.target 을 사용하는 방법 
+// 생성자 함수 
+function Circle(radius) {
+    // 이함수가 new 연산자와 함께 호출되지 않았다면 new.target 은 undefined이다.
+    // 즉 false 기 때문에 해당 if 문이 실행된다.
+    if (!new.target) {
+        // new 연산자와 함께 생성자 함수를 재귀 호출하여 생성된 인스턴스를 반환한다.
+        return new Circle(radius);
+    }
+    this.radius = radius;
+    this.getDiameter = function () {
+        return 2 * this.radius;
+    };
+}
+// new 연산자 없이 생성자 함수를 호출하여도 new.target을 통해 생성자 함수로서 호출된다.
+const circle = Circle(5);
+
+//--------------------------------------------------------------------
+// ## 스코프 세이프 생성자 패턴 Scope-Safe Constructor Pattern
+function Circle(radius) {
+  // 생성자 함수가 new 연산자와 함께 호출되면 함수의 선두에 빈 객체를 생성하고 
+  // this에 바인딩 한다. 이때 this 와 Circle 은 프로토타입에 의해 연결된다.
+  // new 연산자와 함께 호출되지않는다면 this 는 전역객체인 window를 가르키게되고 
+  // this 와 Circle은 프로토타입에 의해 연결되지않는다 이점을 이용해 사용한다.
+  if (!(this instanceof Circle)) {
+    // new 연산자와 함께 생성자 함수를 재귀 호출하여 생성된 인스턴스를 반환한다.
+    return new Circle(radius);
+  }
+  this.radius = radius;
+  this.getDiameter = function () {
+    return 2 * this.radius;
+  };
+}
+// new 연산자 없이 생성자 함수를 호출하여도 생성자 함수로서 호출된다.
+const circle = Circle(5);
+
