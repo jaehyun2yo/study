@@ -1,3 +1,49 @@
+# 📍 22장 this
+
+# this란?
+
+메서드를 정의하는 시점 이 객체를 생성하는 시점보다 먼저오게되 자신을 호출할 객체의 값을 this 로 표현한다.
+
+즉, 자신이 속한 객체 / 자신이 생설할 인스턴스를 가르키는 참조변수 이다.
+
+# this 바인딩
+
+this바인딩은 함수가 호출되는 방식에따라 동적으로 결정된다.
+
+- 일반함수 호출 → 전역객체
+- 전역 호출 → 전역객체
+- 메서드내부 호출→ this를 호출한 객체
+- 생성자 함수 호출→ 생성자함수가 생성할 인스턴스
+- Function.prototype.apply/call/bind 메서드에 의한 간접 호출
+
+# this 명시적 변경
+
+1. `Function.prototype.apply(thisArg[, argsArray])thisArg`로 변경, 호출할 함수에 전달할 인수를 두 번째 매개변수에 배열로 만들어서 넣기 ( 함수호출 )
+2. `Function.prototype.call(thisArg[, arg1, arg2, ...])thisArg`로 변경, 호출할 함수에 전달할 인수를 두 번째 매개변수부터 넣기 ( 함수호출 )
+3. `Function.prototype.bind(thisArg)this`값을 `thisArg`로 변경한 함수를 리턴
+
+```jsx
+// arguments가 유사배열이라 배열메서드 사용이 불가능해서 배열메서드를 빌려쓰기위한 코드
+
+// apply 배열로 전달
+function sum() {
+  return Array.prototype.reduce.apply(arguments, [(p, c) => p + c, 0]);
+}
+console.log(sum(1, 2, 3, 4)); // 10
+
+// call 하나씩 인수로 전달
+function sum() {
+  return Array.prototype.reduce.call(arguments, (p, c) => p + c, 0);
+}
+console.log(sum(1, 2, 3, 4)); // 10
+
+// bind 새로운 함수 반환
+function sum() {
+  return Array.prototype.reduce.bind(arguments, (p, c) => p + c, 0);
+}
+console.log(sum(1, 2, 3, 4)()); // 10
+```
+
 # 📍21장 빌트인 객체
 
 # 자바스크립트 객체 분류
