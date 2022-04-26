@@ -1,0 +1,20 @@
+.flex-container {
+  margin: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  background: #60b99a;
+  /* 수평 정렬하려면 flex-item 을 inline-block 속성을 주든지 float 프로퍼티를 지정하던지
+  아니면 flexbox 를 사용해 부모요소 내에 아래 코드를 넣으면 수평 정렬을 가능하게한다. */
+  display: flex;
+  justify-content: space-around;
+}
+
+.flex-item {
+  margin: 10px;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  background: #4584b1;
+}
+
